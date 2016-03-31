@@ -142,7 +142,8 @@ def parse_bool(string_form):
 @calculate_mi_vars
 def digitalocean_host(resource, tfvars=None):
     raw_attrs = resource['primary']['attributes']
-    name = raw_attrs['name']
+    # Use private address as ansible inventory_hostname
+    name = raw_attrs['ipv4_address_private']
     groups = []
 
     attrs = {
@@ -156,9 +157,9 @@ def digitalocean_host(resource, tfvars=None):
         'ssh_keys': parse_list(raw_attrs, 'ssh_keys'),
         'status': raw_attrs['status'],
         # ansible
-        'ansible_ssh_host': raw_attrs['ipv4_address'],
-        'ansible_ssh_port': 22,
-        'ansible_ssh_user': 'root',  # it's always "root" on DO
+        #'ansible_ssh_host': raw_attrs['ipv4_address'],
+        #'ansible_ssh_port': 22,
+        #'ansible_ssh_user': 'root',  # it's always "root" on DO
         # generic
         'public_ipv4': raw_attrs['ipv4_address'],
         'private_ipv4': raw_attrs.get('ipv4_address_private',
